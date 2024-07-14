@@ -1,20 +1,18 @@
 import { PassThrough } from "node:stream"
-
 import {
   createReadableStreamFromReadable,
   type AppLoadContext,
   type EntryContext,
 } from "@remix-run/node"
-
 import { renderToPipeableStream } from "react-dom/server"
 import { RemixServer } from "@remix-run/react"
 import { isbot } from "isbot"
-
 import i18next from "i18next"
 import { initReactI18next, I18nextProvider } from "react-i18next"
 
-import * as i18n from "./i18n"
-import { i18nServer } from "./i18n.server"
+import { parseLocale } from "~/lib/i18n.server"
+
+import i18n from "~/lib/i18n"
 
 const ABORT_DELAY = 5_000
 
@@ -26,16 +24,12 @@ export default async function handleRequest(
   // This is ignored so we can keep it in the template for visibility.  Feel
   // free to delete this parameter in your app if you're not using it!
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  _loadContext: AppLoadContext
+  _loadContext: AppLoadContext,
 ) {
-  const lng = await i18nServer.getLocale(request)
-  const ns = i18nServer.getRouteNamespaces(remixContext)
-
   const instance = i18next.createInstance()
   await instance.use(initReactI18next).init({
+    lng: await parseLocale(request),
     ...i18n,
-    lng,
-    ns,
   })
 
   let callbackName = isbot(request.headers.get("user-agent"))
@@ -64,7 +58,7 @@ export default async function handleRequest(
             new Response(stream, {
               headers: responseHeaders,
               status: responseStatusCode,
-            })
+            }),
           )
 
           pipe(body)
@@ -81,7 +75,7 @@ export default async function handleRequest(
             console.error(error)
           }
         },
-      }
+      },
     )
 
     setTimeout(abort, ABORT_DELAY)

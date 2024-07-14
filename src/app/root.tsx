@@ -1,87 +1,112 @@
-import {
-  json,
-  type LinksFunction,
-  type LoaderFunctionArgs,
-} from "@remix-run/node"
-
+import { json, type LoaderFunctionArgs } from "@remix-run/node"
 import {
   Links,
   Meta,
   Outlet,
   Scripts,
   ScrollRestoration,
-  isRouteErrorResponse,
-  useLoaderData,
-  useRouteError,
-  useRouteLoaderData,
 } from "@remix-run/react"
+import cx from "clsx"
 
-import { useChangeLanguage } from "remix-i18next/react"
-import { i18nServer, localeCookie } from "./i18n.server"
+import { removeTrailingSlashes } from "~/lib/http.server"
+import { parseColorScheme } from "~/lib/color-scheme.server"
+import { parseLocale, serializeLocale } from "~/lib/i18n.server"
 
-import rootStyleHref from "./root.css?url"
+import {
+  useForceDark,
+  useColorScheme,
+  ColorSchemeScript,
+} from "~/lib/color-scheme"
+import { useLocale } from "~/lib/i18n"
 
-export const links: LinksFunction = () => [
-  { rel: "stylesheet", href: rootStyleHref },
-]
+import { GlobalLoading } from "~/ui/global-loading"
 
-export const handle = { i18n: ["common"] }
+import "~/styles/tailwind.css"
+import "~/styles/bailwind.css"
+
+export function links() {
+  const preloadedFonts = [
+    "inter-roman-latin-var.woff2",
+    "inter-italic-latin-var.woff2",
+    "source-code-pro-roman-var.woff2",
+    "source-code-pro-italic-var.woff2",
+  ]
+  return [
+    { rel: "icon", href: "/favicon-32.png", sizes: "32x32" },
+    { rel: "icon", href: "/favicon-128.png", sizes: "128x128" },
+    { rel: "icon", href: "/favicon-180.png", sizes: "180x180" },
+    { rel: "icon", href: "/favicon-192.png", sizes: "192x192" },
+    { rel: "apple-touch-icon", href: "/favicon-180.png", sizes: "180x180" },
+    ...preloadedFonts.map((font) => ({
+      rel: "preload",
+      as: "font",
+      href: `/fonts/${font}`,
+      crossOrigin: "anonymous",
+    })),
+  ]
+}
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  const locale = await i18nServer.getLocale(request)
+  removeTrailingSlashes(request)
+
+  const colorScheme = await parseColorScheme(request)
+  const locale = await parseLocale(request)
+
   return json(
-    { locale },
-    { headers: { "Set-Cookie": await localeCookie.serialize(locale) } }
+    {
+      colorScheme,
+      locale,
+    },
+    {
+      headers: {
+        "Set-Cookie": await serializeLocale(locale),
+        Vary: "Cookie",
+      },
+    },
   )
 }
 
-export function Layout({ children }: { children: React.ReactNode }) {
-  const loaderData = useRouteLoaderData<typeof loader>("root")
+export default function App() {
+  const locale = useLocale()
+  const forceDark = useForceDark()
+  const colorScheme = useColorScheme()
+  const zh = locale === "zh" || locale.startsWith("zh-")
   return (
-    <html lang={loaderData?.locale ?? "en"}>
+    <html
+      lang={locale}
+      className={cx({
+        dark: forceDark || colorScheme === "dark",
+      })}
+      data-theme={forceDark ? "dark" : colorScheme}
+    >
       <head>
+        {!forceDark && <ColorSchemeScript />}
         <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <Meta />
+        <meta
+          name="viewport"
+          content="width=device-width,initial-scale=1,viewport-fit=cover"
+        />
         <Links />
+        <Meta />
       </head>
-      <body>
-        {children}
+
+      <body
+        className={cx(
+          "antialiased",
+          zh ? "font-['LXGW_WenKai_Regular']" : "",
+          "flex min-h-screen w-full flex-col overflow-x-hidden",
+          "selection:bg-blue-200 selection:text-black",
+          "dark:selection:bg-blue-800 dark:selection:text-white",
+          forceDark
+            ? "bg-gray-900 text-gray-200"
+            : "bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-200",
+        )}
+      >
+        <GlobalLoading />
+        <Outlet />
         <ScrollRestoration />
         <Scripts />
       </body>
     </html>
   )
-}
-
-export default function App() {
-  const { locale } = useLoaderData<typeof loader>()
-  useChangeLanguage(locale)
-  return <Outlet />
-}
-
-export function ErrorBoundary() {
-  const error = useRouteError()
-
-  if (isRouteErrorResponse(error)) {
-    return (
-      <div>
-        <h1>
-          {error.status} {error.statusText}
-        </h1>
-        <p>{error.data}</p>
-      </div>
-    )
-  } else if (error instanceof Error) {
-    return (
-      <div>
-        <h1>Error</h1>
-        <p>{error.message}</p>
-        <p>The stack trace is:</p>
-        <pre>{error.stack}</pre>
-      </div>
-    )
-  } else {
-    return <h1>Unknown Error</h1>
-  }
 }

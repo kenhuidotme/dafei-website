@@ -4,7 +4,7 @@ import { defineConfig } from "vite"
 
 const base = process.env.BASE_URL || "/"
 
-export default defineConfig(({ command }) => {
+export default defineConfig(() => {
   return {
     plugins: [
       remix({
@@ -19,7 +19,6 @@ export default defineConfig(({ command }) => {
       }),
       tsconfigPaths(),
     ],
-    publicDir: command === "build" ? false : "public",
     base,
   }
 })

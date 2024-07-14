@@ -1,7 +1,9 @@
 export default {
   plugins: {
-    "postcss-preset-env": {
-      stage: 3,
-    },
+    "postcss-import": {},
+    "tailwindcss/nesting": {},
+    tailwindcss: {},
+    autoprefixer: {},
+    cssnano: { preset: "default" },
   },
 }

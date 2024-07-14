@@ -3,7 +3,6 @@ import compression from "compression"
 import express from "express"
 
 import * as serverBuild from "./dist/app/server/index.js"
-import { addWsService } from "./dist/ws.cjs"
 
 const app = express()
 app.use(compression())
@@ -15,7 +14,7 @@ app.disable("x-powered-by")
 const base = process.env.BASE_URL || "/"
 app.use(
   `${base}/assets`,
-  express.static("./dist/app/client/assets", { immutable: true, maxAge: "1y" })
+  express.static("./dist/app/client/assets", { immutable: true, maxAge: "1y" }),
 )
 app.use(base, express.static("./dist/app/client", { maxAge: "1h" }))
 
@@ -27,10 +26,7 @@ app.all("*", remixHandler)
 
 // start server
 const host = process.env.HOST || "localhost"
-const port = process.env.PORT || 4000
-const server = app.listen(port, () =>
-  console.log(`Server listening at http://${host}:${port}`)
+const port = process.env.PORT || "3000"
+app.listen(port, () =>
+  console.log(`Server listening at http://${host}:${Number(port)}`),
 )
-
-// add ws service
-addWsService(server)
