@@ -75,7 +75,6 @@ function AboutLargeImages() {
 function AboutSmallImage01() {
   const { t } = useTranslation("about", { keyPrefix: "ads" })
   const locale = useLocale()
-  const textCenter = ""
   const ads = [
     {
       literal: t("building-a-better-tomorrow"),
