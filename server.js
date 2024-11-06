@@ -14,9 +14,17 @@ app.disable("x-powered-by")
 const base = process.env.BASE_URL || "/"
 app.use(
   `${base}/assets`,
-  express.static("./dist/app/client/assets", { immutable: true, maxAge: "1y" }),
+  express.static("./dist/app/client/assets", {
+    immutable: true,
+    maxAge: "1y",
+  }),
 )
-app.use(base, express.static("./dist/app/client", { maxAge: "1h" }))
+app.use(
+  base,
+  express.static("./dist/app/client", {
+    maxAge: "1d",
+  }),
+)
 
 // handle SSR requests
 const remixHandler = createRequestHandler({
