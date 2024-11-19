@@ -56,7 +56,7 @@ export default {
   "specs.motor.tire-size.name": "轮胎尺寸",
   "specs.motor.tire-size.value": "8 寸",
   "specs.motor.power.name": "额定功率",
-  "specs.motor.power.value": "250W",
+  "specs.motor.power.value": "350W",
   "specs.motor.hall-sensor.name": "霍尔传感器",
   "specs.motor.hall-sensor.value": "N/A",
 
@@ -80,5 +80,5 @@ export default {
   "specs.battery.capacity.name": "电池容量",
   "specs.battery.capacity.value": "4800mAh",
   "specs.battery.charge-time.name": "充电时间",
-  "specs.battery.charge-time.value": "3 小时",
+  "specs.battery.charge-time.value": "3.5 小时",
 }

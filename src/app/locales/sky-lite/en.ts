@@ -57,7 +57,7 @@ export default {
   "specs.motor.tire-size.name": "Tire Size",
   "specs.motor.tire-size.value": "8 inch",
   "specs.motor.power.name": "Rated Power",
-  "specs.motor.power.value": "250 W",
+  "specs.motor.power.value": "350 W",
   "specs.motor.hall-sensor.name": "Hall Sensor",
   "specs.motor.hall-sensor.value": "N/A",
 
@@ -81,5 +81,5 @@ export default {
   "specs.battery.capacity.name": "Capacity",
   "specs.battery.capacity.value": "4800 mAh",
   "specs.battery.charge-time.name": "Charge Time",
-  "specs.battery.charge-time.value": "3 h",
+  "specs.battery.charge-time.value": "3.5 h",
 }

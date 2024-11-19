@@ -52,24 +52,24 @@ export const DetailsMenu = forwardRef<
     <details
       ref={forwardedRef}
       open={open ?? isOpen}
-      onToggle={(event) => {
-        onToggle && onToggle(event)
-        if (event.defaultPrevented) return
-        setIsOpen(event.currentTarget.open)
+      onToggle={(ev) => {
+        onToggle && onToggle(ev)
+        if (ev.defaultPrevented) return
+        setIsOpen(ev.currentTarget.open)
       }}
-      onMouseDown={(event) => {
-        onMouseDown && onMouseDown(event)
-        if (event.defaultPrevented) return
+      onMouseDown={(ev) => {
+        onMouseDown && onMouseDown(ev)
+        if (ev.defaultPrevented) return
         if (isOpen) clickRef.current = true
       }}
-      onTouchStart={(event) => {
-        onTouchStart && onTouchStart(event)
-        if (event.defaultPrevented) return
+      onTouchStart={(ev) => {
+        onTouchStart && onTouchStart(ev)
+        if (ev.defaultPrevented) return
         if (isOpen) clickRef.current = true
       }}
-      onFocus={(event) => {
-        onFocus && onFocus(event)
-        if (event.defaultPrevented) return
+      onFocus={(ev) => {
+        onFocus && onFocus(ev)
+        if (ev.defaultPrevented) return
         if (isOpen) focusRef.current = true
       }}
       {...rest}

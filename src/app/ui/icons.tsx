@@ -65,7 +65,7 @@ export function TwitterIcon({
 }
 
 export function GitHubIcon({
-  height = 40,
+  height = 32,
   ...props
 }: React.ComponentPropsWithoutRef<"svg">) {
   return (

@@ -3,6 +3,8 @@ import { useTranslation } from "react-i18next"
 import { useLocale } from "remix-i18next/react"
 import cx from "clsx"
 
+import React, { useRef } from "react"
+
 import { AdImage } from "~/ui/ad-image"
 
 export const meta: MetaFunction = () => {
@@ -417,13 +419,50 @@ function SkyLiteLargeImage04() {
 
 function SkyLitePhotos() {
   const photos = ["01", "02", "03", "04", "05", "06", "07"]
+  const ref = useRef<HTMLDivElement>(null)
+
+  const handleMouseDown = (ev: React.MouseEvent) => {
+    const el = ref.current
+    if (!el) {
+      return
+    }
+
+    const startPos = {
+      left: el.scrollLeft,
+      top: el.scrollTop,
+      x: ev.clientX,
+      y: ev.clientY,
+    }
+
+    const handleMouseMove = (ev: MouseEvent) => {
+      const dx = ev.clientX - startPos.x
+      const dy = ev.clientY - startPos.y
+      el.scrollTop = startPos.top - dy
+      el.scrollLeft = startPos.left - dx
+    }
+
+    const handleMouseUp = () => {
+      el.style.cursor = "grab"
+      document.removeEventListener("mousemove", handleMouseMove)
+      document.removeEventListener("mouseup", handleMouseUp)
+    }
+
+    el.style.cursor = "grabbing"
+    document.addEventListener("mousemove", handleMouseMove)
+    document.addEventListener("mouseup", handleMouseUp)
+  }
+
   return (
-    <div className="__carousel flex gap-6 overflow-x-scroll pb-3 pt-6">
+    <div
+      ref={ref}
+      onMouseDown={handleMouseDown}
+      className="__carousel flex gap-6 pb-3 pt-6"
+    >
       {photos.map((nbr, index) => (
         <img
           key={index}
           src={`/images/sky-lite/${nbr}-photo.jpg`}
-          className="__slide w-[80vw] shrink-0 rounded-lg md:w-[43vw]"
+          className="w-[80vw] shrink-0 rounded-lg md:w-[43vw]"
         />
       ))}
     </div>

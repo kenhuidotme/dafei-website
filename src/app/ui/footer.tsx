@@ -3,7 +3,7 @@ import cx from "clsx"
 
 import { NavLink } from "./link"
 import { TrademarkDFLogo } from "./logos"
-import { BiliBiliIcon, YouTubeIcon } from "./icons"
+import { BiliBiliIcon, GitHubIcon } from "./icons"
 
 export function Footer({
   forceDark,
@@ -34,11 +34,14 @@ export function Footer({
         )}
         aria-label="Find us on the web"
       >
-        <a href="#" aria-label="BiliBili">
+        <a href="https://space.bilibili.com/1503841249" aria-label="BiliBili">
           <BiliBiliIcon aria-hidden />
         </a>
-        <a href="#" aria-label="YouTube">
-          <YouTubeIcon aria-hidden />
+        <a
+          href="https://github.com/kenhuidotme/dafei-website"
+          aria-label="YouTube"
+        >
+          <GitHubIcon aria-hidden />
         </a>
       </nav>
     </footer>

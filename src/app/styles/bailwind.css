@@ -10,8 +10,12 @@ html {
 }
 
 .__carousel {
-  scroll-snap-type: x mandatory;
+  @apply cursor-grab snap-x overflow-x-scroll;
   -webkit-overflow-scrolling: touch;
+}
+
+.__carousel > img {
+  @apply pointer-events-none;
 }
 
 .__carousel::-webkit-scrollbar {
@@ -24,10 +28,6 @@ html {
 
 .__carousel::-webkit-scrollbar-track {
   @apply bg-transparent;
-}
-
-.__slide {
-  scroll-snap-align: start;
 }
 
 .__placeholder {
